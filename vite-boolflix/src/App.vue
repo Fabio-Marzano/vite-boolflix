@@ -1,30 +1,97 @@
-<script setup>
-import HelloWorld from './components/HelloWorld.vue'
-</script>
-
 <template>
-  <div>
-    <a href="https://vitejs.dev" target="_blank">
-      <img src="/vite.svg" class="logo" alt="Vite logo" />
-    </a>
-    <a href="https://vuejs.org/" target="_blank">
-      <img src="./assets/vue.svg" class="logo vue" alt="Vue logo" />
-    </a>
-  </div>
-  <HelloWorld msg="Vite + Vue" />
+	<div id="app">
+		<Header
+			:placeholder="placeholder"
+			@fetch-products="showProducts"
+			@fetch-series="showProducts"
+		/>
+		<main>
+			<div class="container">
+				<div class="row">
+					<div class="col d-flex flex-wrap justify-content-center">
+						<div v-if="products.length && series.length">
+							<h2 class="text-center py-4">Movies</h2>
+							<section
+								id="movies"
+								class="d-flex flex-wrap justify-content-around"
+							>
+								<Product
+									class="p-1"
+									v-for="movie in products"
+									:key="movie.id"
+									:item="movie"
+								/>
+							</section>
+							<h2 class="text-center py-4">Series</h2>
+							<section
+								id="series"
+								class="d-flex flex-wrap justify-content-around"
+							>
+								<Product
+									class="p-1"
+									v-for="serie in series"
+									:key="serie.id"
+									:item="serie"
+								/>
+							</section>
+						</div>
+						<h3 v-else class="h1 pt-4">Cerca qualcosa...</h3>
+					</div>
+				</div>
+			</div>
+		</main>
+	</div>
 </template>
 
-<style scoped>
-.logo {
-  height: 6em;
-  padding: 1.5em;
-  will-change: filter;
-  transition: filter 300ms;
+<script>
+import Header from "./components/Header.vue";
+import Product from "./components/Product.vue";
+
+export default {
+	name: "App",
+	components: {
+		Header,
+		Product,
+	},
+	data() {
+		return {
+			placeholder: "Cerca un film o una serie",
+			products: [],
+			series: [],
+		};
+	},
+	methods: {
+		showProducts(items, target) {
+			if (!items) {
+				this[target] = [];
+				return;
+			}
+
+			this[target] = items;
+		},
+	},
+};
+</script>
+
+<style lang="scss">
+@import "~bootstrap/dist/css/bootstrap.css";
+$main_font: "Segoe UI", "Open Sans", Helvetica, sans-serif;
+/* Generics */
+::-webkit-scrollbar {
+	width: 5px;
+	height: 5px;
 }
-.logo:hover {
-  filter: drop-shadow(0 0 2em #646cffaa);
+
+::-webkit-scrollbar-thumb {
+	background: rgb(194, 0, 0);
+	border-radius: 10px;
 }
-.logo.vue:hover {
-  filter: drop-shadow(0 0 2em #42b883aa);
+
+main {
+	font-family: $main_font;
+	background-color: rgb(71, 71, 71);
+	height: calc(100vh - 100px);
+	overflow-y: scroll;
+	color: white;
 }
 </style>
